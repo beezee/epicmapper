@@ -7,6 +7,8 @@ module.exports = function(config){
       'app/bower_components/angular/angular.js',
       'app/bower_components/angular-route/angular-route.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js',
       'app/js/**/*.js',
       'test/unit/**/*.js'
     ],
