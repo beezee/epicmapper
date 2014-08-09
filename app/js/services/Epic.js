@@ -7,7 +7,7 @@ angular.module('epicMapper.services')
 
     epic.withSettings = function(settings) {
       var epicInstance = new epic();
-      epicInstance.settings = settings
+      epicInstance.settings = _.pick(settings, 'title', 'start', 'end', 'cost');
       return epicInstance;
     };
 
@@ -23,6 +23,18 @@ angular.module('epicMapper.services')
 
     epic.prototype.costPerDay = function() {
       return this.settings.cost / this.duration();
+    };
+
+    epic.prototype.settings = {};
+
+    epic.prototype.isValid = function() {
+      if (!this.settings.start) return false;
+      if (!moment(this.settings.start).isValid()) return false;
+      if (!this.settings.end) return false;
+      if (!moment(this.settings.end).isValid()) return false;
+      if (this.settings.cost === '' || isNaN(this.settings.cost)) return false;
+      if (this.settings.title === '' || (typeof this.settings.title) !== 'string') return false;
+      return true;
     };
 
     return epic;
