@@ -10,12 +10,13 @@ angular.module('epicMapper.services')
       var repo = new epicRepo();
       repo.assignedEpics = _.chain(events)
         .map(function(e) { return Epic.withSettings(e); })
-        .filter(function(e) { return e.constructor == Epic && e.isValid(); }).value();
+        .filter(function(e) { return e.constructor == Epic && e.isValid(); })
+        .indexBy(function(e) { return e.settings.title; }).value();
       return repo;
     };
 
     epicRepo.prototype.epics = function() {
-      return this.assignedEpics;
+      return _.values(this.assignedEpics);
     };
 
     epicRepo.prototype.epicsSpanningDate = function(date) {

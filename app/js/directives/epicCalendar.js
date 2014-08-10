@@ -20,20 +20,33 @@ angular.module('epicMapper.directives')
           scope.data.editingEvent = event;
         };
 
+        // absurd hack
+        // angular sees these the current event being equal to 
+        // the new one, so no $digest is triggered on the
+        // parent scope for the epic editor
+        // re-assigning the values does not work either, 
+        // but for some reason this does
+        var refreshEditingEvent = function(event) {
+            $timeout(function() { editEvent(event); }, 100);
+
+        };
+
         var refreshCalendar = function(event, jsEvent, ui, view) {
           scope.data.epicRepo = EpicRepo.initializeFromEvents(scope.eventSources[0]);
           if (event && scope.data.editingEvent) {
-            // absurd hack
-            // angular sees these the current event being equal to 
-            // the new one, so no $digest is triggered on the
-            // parent scope for the epic editor
-            // re-assigning the values does not work either, 
-            // but for some reason this does
             editEvent({title: event.title});
-            $timeout(function() { editEvent(event); }, 100);
+            refreshEditingEvent(event);
           }
           if (scope.ec && scope.ec.fullCalendar)
             scope.ec.fullCalendar('render');
+        };
+
+        var renderEvent = function(event, element) {
+          var eventText = event.title;
+          var epic = scope.data.epicRepo.assignedEpics[event.title];
+          eventText += ' - Target: ' + moment(event.end).format('MM/DD/YYYY');
+          eventText += ' Cost Per Day: ' + Math.ceil(epic.costPerDay());
+          element.find('.fc-event-title').text(eventText);
         };
 
         scope.calendarConfig = {
@@ -48,6 +61,7 @@ angular.module('epicMapper.directives')
           eventClick: editEvent,
           eventDragStop: refreshCalendar,
           eventResizeStop: refreshCalendar,
+          eventRender: renderEvent,
           dayRender: function(date, element, view) {
             var daysCost = costForDay(date);
             if (!daysCost || isNaN(daysCost)) return;
@@ -55,7 +69,9 @@ angular.module('epicMapper.directives')
           },
         };
 
-        scope.$watch('data.editingEvent.cost', function() { refreshCalendar(); });
+        scope.$watchCollection(
+          '[data.editingEvent.cost, data.editingEvent.start, data.editingEvent.end]', 
+          function() { refreshCalendar(); });
 
         element.html('<div><div ui-calendar="calendarConfig" config="calendarConfig" '
           + 'ng-model="eventSources" calendar="ec"></div></div>')
