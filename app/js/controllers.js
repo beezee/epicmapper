@@ -24,7 +24,10 @@ angular.module('epicMapper.controllers', [])
     ngUrlBind($scope, 'state');
 
     var epicSettings = function() {
-      return _.map($scope.epicData.epicRepo.epics(), function(e) { return e.settings; });
+      return _.chain($scope.epicData.epicRepo.epics())
+        .filter(function(e) { return e.target() >= moment().startOf('day'); })
+        .map(function(e) { return e.settings; })
+        .value();
     };
 
     $scope.savedState = function() {

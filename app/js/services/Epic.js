@@ -25,6 +25,11 @@ angular.module('epicMapper.services')
       return (moment(this.settings.end).businessDiff(moment(this.settings.start), 'days') + 1);
     };
 
+    epic.prototype.target = function() {
+      return (moment(this.settings.end).isValid()) 
+        ? moment(this.settings.end) : moment(this.settings.start);
+    };
+
     epic.prototype.costPerDay = function() {
       return this.settings.cost / this.duration();
     };

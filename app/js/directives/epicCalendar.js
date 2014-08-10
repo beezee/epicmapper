@@ -42,9 +42,7 @@ angular.module('epicMapper.directives')
         var renderEvent = function(event, element) {
           var eventText = event.title;
           var epic = scope.data.epicRepo.assignedEpics[event.title];
-          var target = (moment(event.end).isValid()) 
-            ? moment(event.end) : moment(event.start);
-          eventText += ' - Target: ' + target.format('MM/DD/YYYY');
+          eventText += ' - Target: ' + epic.target().format('MM/DD/YYYY');
           eventText += ' Cost Per Day: ' + Math.ceil(epic.costPerDay());
           element.find('.fc-event-title').text(eventText);
         };
@@ -70,7 +68,8 @@ angular.module('epicMapper.directives')
         };
 
         scope.$watchCollection(
-          '[data.editingEvent.cost, data.editingEvent.start, data.editingEvent.end]', 
+          '[data.editingEvent.cost, data.editingEvent.start, ' +
+          'data.editingEvent.end, data.editingEvent.title]', 
           function() { refreshCalendar(); });
 
         element.html('<div><div ui-calendar="calendarConfig" config="calendarConfig" '
