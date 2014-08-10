@@ -12,6 +12,14 @@ describe('Epic', function() {
       irrelevantSettings.costPerDay = 'foo';
       expect(Epic.withSettings(irrelevantSettings).settings).toEqual(settings);
     }));
+
+    it('uses start date if no end date provided', inject(function(Epic) {
+      var oneDaySettings = _.clone(settings);
+      oneDaySettings.end = null;
+      var expectedSettings = _.clone(oneDaySettings);
+      expectedSettings.end = expectedSettings.start;
+      expect(Epic.withSettings(oneDaySettings).settings).toEqual(expectedSettings);
+    }));
   });
 
   describe('toEvent()', function() {
@@ -55,11 +63,11 @@ describe('Epic', function() {
       expect(Epic.withSettings(invalidSettings).isValid()).toBe(false);
     }));
 
-    it('rejects settings with invalid or missing end date', inject(function(Epic) {
+    it('rejects settings with invalid end date', inject(function(Epic) {
       invalidSettings.end = 'thing';
       expect(Epic.withSettings(invalidSettings).isValid()).toBe(false);
       delete invalidSettings.end;
-      expect(Epic.withSettings(invalidSettings).isValid()).toBe(false);
+      expect(Epic.withSettings(invalidSettings).isValid()).toBe(true);
     }));
 
     it('rejects settings with invalid or missing cost', inject(function(Epic) {

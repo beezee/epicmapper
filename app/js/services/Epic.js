@@ -8,6 +8,8 @@ angular.module('epicMapper.services')
     epic.withSettings = function(settings) {
       var epicInstance = new epic();
       epicInstance.settings = _.pick(settings, 'title', 'start', 'end', 'cost');
+      if (!epicInstance.settings.end)
+        epicInstance.settings.end = epicInstance.settings.start; 
       return epicInstance;
     };
 
@@ -32,7 +34,6 @@ angular.module('epicMapper.services')
     epic.prototype.isValid = function() {
       if (!this.settings.start) return false;
       if (!moment(this.settings.start).isValid()) return false;
-      if (!this.settings.end) return false;
       if (!moment(this.settings.end).isValid()) return false;
       if (this.settings.cost === '' || isNaN(this.settings.cost)) return false;
       if (this.settings.title === '' || (typeof this.settings.title) !== 'string') return false;
