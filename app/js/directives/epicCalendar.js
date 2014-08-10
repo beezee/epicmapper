@@ -27,16 +27,14 @@ angular.module('epicMapper.directives')
         // re-assigning the values does not work either, 
         // but for some reason this does
         var refreshEditingEvent = function(event) {
+            editEvent({title: event.title});
             $timeout(function() { editEvent(event); }, 100);
-
         };
 
         var refreshCalendar = function(event, jsEvent, ui, view) {
           scope.data.epicRepo = EpicRepo.initializeFromEvents(scope.eventSources[0]);
-          if (event && scope.data.editingEvent) {
-            editEvent({title: event.title});
+          if (event && scope.data.editingEvent)
             refreshEditingEvent(event);
-          }
           if (scope.ec && scope.ec.fullCalendar)
             scope.ec.fullCalendar('render');
         };
