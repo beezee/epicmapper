@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('epicMapper.directives')
-  .directive('epicCalendar', ['EpicRepo', '$compile', function(EpicRepo, $compile) {
+  .directive('epicCalendar', ['EpicRepo', '$compile', '$timeout', function(EpicRepo, $compile, $timeout) {
     return {
       restrict: 'A',
       scope: {
@@ -16,9 +16,24 @@ angular.module('epicMapper.directives')
             .reduce(function(sum, num) { return sum + num; });
         };
 
+        var editEvent = function(event, allDay, jsEvent, view) {
+          scope.data.editingEvent = event;
+        };
+
         var refreshCalendar = function(event, jsEvent, ui, view) {
           scope.data.epicRepo = EpicRepo.initializeFromEvents(scope.eventSources[0]);
-          scope.ec.fullCalendar('render');
+          if (event && scope.data.editingEvent) {
+            // absurd hack
+            // angular sees these the current event being equal to 
+            // the new one, so no $digest is triggered on the
+            // parent scope for the epic editor
+            // re-assigning the values does not work either, 
+            // but for some reason this does
+            editEvent({title: event.title});
+            $timeout(function() { editEvent(event); }, 100);
+          }
+          if (scope.ec && scope.ec.fullCalendar)
+            scope.ec.fullCalendar('render');
         };
 
         scope.calendarConfig = {
@@ -30,6 +45,7 @@ angular.module('epicMapper.directives')
             center: 'title',
             right: 'prev,next'
           },
+          eventClick: editEvent,
           eventDragStop: refreshCalendar,
           eventResizeStop: refreshCalendar,
           dayRender: function(date, element, view) {
@@ -38,6 +54,9 @@ angular.module('epicMapper.directives')
             element.prepend('<span class="hours-per-day">'+Math.ceil(daysCost)+'</span>');    
           },
         };
+
+        scope.$watch('data.editingEvent.cost', function() { refreshCalendar(); });
+
         element.html('<div><div ui-calendar="calendarConfig" config="calendarConfig" '
           + 'ng-model="eventSources" calendar="ec"></div></div>')
         $compile(element.contents())(scope);

@@ -10,6 +10,7 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="bower_components/html5-boilerplate/css/normalize.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css">
   <link rel="stylesheet" href="css/app.css"/>
   <link rel="stylesheet" href="bower_components/fullcalendar/fullcalendar.css"/>
@@ -20,7 +21,69 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
 
-  <div epic-calendar epic-data="epicData"></div>
+  <div class="row-fluid">
+    <div class="col-md-4">
+      <div ng-cloak>
+        <form class="form-horizontal">
+          <fieldset>
+            <div id="legend">
+              <legend class="">{{ epicData.editingEvent.title || 'New Epic' }}</legend>
+            </div>
+       
+            <!-- Title -->
+            <div class="control-group">
+              <label class="control-label"  for="epic-title-input">
+                Epic Title
+              </label>
+              <div class="controls">
+                <input type="text" ng-model="epicData.editingEvent.title" 
+                    id="epic-title-input" name="epic-title-input" 
+                      placeholder="" class="input-xlarge">
+              </div>
+            </div>
+       
+            <!-- Date Range -->
+            <div class="control-group">
+              <label class="control-label" for="epic-start-input">Start Date/End Date</label>
+              <div class="controls" style="overflow:hidden;">
+                <input type="text" datepicker-popup="MM/dd/yyyy" id="epic-start-input" 
+                  name="epic-start-input" class="col-md-4"
+                  date-disabled="isWeekend(date, mode)"
+                  ng-model="epicData.editingEvent.start"
+                  placeholder="" class="input-xlarge">
+                <input type="text" datepicker-popup="MM/dd/yyyy" id="epic-end-input" 
+                  name="epic-end-input" class="col-md-4"
+                  date-disabled="isWeekend(date, mode)"
+                  ng-model="epicData.editingEvent.end"
+                  placeholder="" class="input-xlarge">
+              </div>
+            </div>
+         
+            <div class="control-group">
+              <label class="control-label" for="epic-cost-input">Cost</label>
+              <div class="controls">
+                <input type="number" min="1" id="epic-cost-input"
+                  name="epic-cost-input" ng-model="epicData.editingEvent.cost" />
+              </div>
+            </div>
+       
+            <!-- Submit -->
+            <div class="control-group">
+              <div class="controls">
+                <br />
+                <button ng-click="epicData.editingEvent = {isNew: true}" class="btn btn-success">New</button>
+                <button ng-if="epicData.editingEvent.isNew" class="btn">Add</button>
+              </div>
+            </div>
+       
+          </fieldset>
+        </form>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div epic-calendar epic-data="epicData"></div>
+    </div>
+  </div>
   <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
   -->
@@ -28,6 +91,7 @@
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
   <script type="text/javascript" src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
+  <script src="js/angular-ui.min.js"></script>
   <script type="text/javascript" src="bower_components/angular-ui-calendar/src/calendar.js"></script>
   <script type="text/javascript" src="bower_components/fullcalendar/fullcalendar.js"></script>
   <script type="text/javascript" src="bower_components/fullcalendar/gcal.js"></script>
