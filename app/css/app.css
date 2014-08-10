@@ -28,3 +28,9 @@
   content: "";
   padding: 0;
 }
+
+.hours-per-day {
+  display: inline;
+  float: left;
+  margin-left: 8px;
+}

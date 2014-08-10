@@ -14,11 +14,13 @@ angular.module('epicMapper.services')
     epic.prototype.toEvent = function() {
       var eventHash = _.clone(this.settings);
       eventHash.costPerDay = this.costPerDay();
+      eventHash.start = moment(eventHash.start).toDate();
+      eventHash.end = moment(eventHash.end).toDate();
       return eventHash;
     };
 
     epic.prototype.duration = function() {
-      return (moment(this.settings.end).diff(moment(this.settings.start), 'days') + 1);
+      return (moment(this.settings.end).businessDiff(moment(this.settings.start), 'days') + 1);
     };
 
     epic.prototype.costPerDay = function() {

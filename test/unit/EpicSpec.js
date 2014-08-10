@@ -16,15 +16,22 @@ describe('Epic', function() {
 
   describe('toEvent()', function() {
     it('should return a correct hash for use in a calendar', inject(function(Epic) {
-      var expectedSettings = _.clone(settings);
-      expectedSettings.costPerDay = (20/3);
-      expect(Epic.withSettings(settings).toEvent()).toEqual(expectedSettings);
+      var expectedEvent = _.clone(settings);
+      expectedEvent.costPerDay = (20/3);
+      expectedEvent.start = moment(expectedEvent.start).toDate();
+      expectedEvent.end = moment(expectedEvent.end).toDate();
+      expect(Epic.withSettings(settings).toEvent()).toEqual(expectedEvent);
     }));
   });
 
   describe('duration()', function() {
     it('should correctly calculate and return epic duration in days', inject(function(Epic) {
       expect(Epic.withSettings(settings).duration()).toEqual(3);
+    }));
+
+    it('should exclude weekends from duration calculation', inject(function(Epic) {
+      var settings = { title: 't', start: '2014-08-08', end: '2014-08-11', cost: 20 };
+      expect(Epic.withSettings(settings).duration()).toEqual(2);
     }));
   });
 
