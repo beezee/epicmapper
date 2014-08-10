@@ -65,7 +65,7 @@ angular.module('epicMapper.directives')
           dayRender: function(date, element, view) {
             var daysCost = costForDay(date);
             if (!daysCost || isNaN(daysCost)) return;
-            element.prepend('<span class="hours-per-day">'+Math.ceil(daysCost)+'</span>');    
+            element.prepend('<span class="badge badge-xs hours-per-day">$'+Math.ceil(daysCost)+'</span>');    
           },
         };
 
