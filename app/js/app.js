@@ -6,6 +6,8 @@ angular.module('epicMapper', [
   'ngRoute',
   'ui.calendar',
   'ui.bootstrap',
+  'base64',
+  'ngUrlBind',
   'epicMapper.services',
   'epicMapper.directives',
   'epicMapper.controllers'

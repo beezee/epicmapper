@@ -21,8 +21,13 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
   <![endif]-->
 
-  <div class="row-fluid">
-    <h2>EpicMapper</h2>
+  <div class="row-fluid container">
+    <div style="overflow:hidden;">
+      <h2 class="pull-left">EpicMapper</h2>
+      <button class="btn pull-right" style="margin-top:14px;" 
+        ng-click="saveState()"
+        ng-if="hasUnsavedChanges">Save</button>
+    </div>
     <hr />
     <br />
   </div>
@@ -95,6 +100,9 @@
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/angular-base64/angular-base64.js"></script>
+  <script src="bower_components/jsurl/lib/jsurl.js"></script>
+  <script src="bower_components/ngUrlBind/dist/ngUrlBind.js"></script>
   <script type="text/javascript" src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
   <script src="js/angular-ui.min.js"></script>
   <script type="text/javascript" src="bower_components/angular-ui-calendar/src/calendar.js"></script>
