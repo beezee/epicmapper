@@ -34,7 +34,7 @@ angular.module('epicMapper.directives')
         };
 
         var refreshCalendar = function(event, jsEvent, ui, view) {
-          if (event && scope.data.editingEvent)
+          if (event && Epic.withSettings(event).isValid() && scope.data.editingEvent)
             refreshEditingEvent(event);
           if (scope.ec && scope.ec.fullCalendar)
             scope.ec.fullCalendar('render');
