@@ -32,6 +32,13 @@ angular.module('epicMapper.controllers', [])
       delete $scope.epicData.editingEvent.isNew;
     };
 
+    $scope.removeEpic = function() {
+      var index = _.findIndex($scope.epicData.epicRepo.epics,
+        function(e) { return e == $scope.epicData.editingEvent; });
+      $scope.epicData.epicRepo.epics.splice(index, 1);
+      $scope.epicData.editingEvent = {isNew: true};
+    };
+
     $scope.savedState = function() {
       return $base64.decode($scope.state);
     };

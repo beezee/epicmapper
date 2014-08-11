@@ -84,8 +84,15 @@
             <div class="control-group">
               <div class="controls">
                 <br />
-                <button ng-click="epicData.editingEvent = {isNew: true}" class="btn btn-success">New</button>
-                <button ng-if="epicData.editingEvent.isNew" ng-click="addEpic()" class="btn">Add</button>
+                <button ng-if="!epicData.editingEvent.isNew"
+                  ng-click="epicData.editingEvent = {isNew: true}" 
+                  class="btn btn-success">New</button>
+                <button ng-if="epicData.editingEvent.isNew" 
+                  ng-click="addEpic()" class="btn">Add</button>
+                <button ng-if="!epicData.editingEvent.isNew" 
+                  ng-click="removeEpic()" class="btn btn-danger">
+                  Remove
+                </button>
               </div>
             </div>
        
