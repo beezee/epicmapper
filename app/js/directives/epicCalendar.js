@@ -44,7 +44,7 @@ angular.module('epicMapper.directives')
           var eventText = event.title;
           var epic = Epic.withSettings(event);
           eventText += ' - Target: ' + epic.target().format('MM/DD/YYYY');
-          eventText += ' Cost Per Day: ' + Math.ceil(epic.costPerDay());
+          eventText += ' - Cost Per Day: ' + Math.ceil(epic.costPerDay());
           element.find('.fc-event-title').text(eventText);
         };
 
