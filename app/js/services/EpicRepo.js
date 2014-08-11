@@ -21,7 +21,8 @@ angular.module('epicMapper.services')
       var targetDate = moment(date);
       return _.filter(this.epics, function(e) {
         return moment(e.start).startOf('day') <= targetDate.startOf('day')
-          && targetDate.startOf('day') <= moment(e.end).endOf('day');
+          && targetDate.startOf('day') <= moment(
+            Epic.withSettings(e).target()).endOf('day');
       });
     };
     

@@ -23,7 +23,8 @@ describe('EpicRepo', function() {
     beforeEach(inject(function(EpicRepo) {
       events = [{title: '1', start: '2014-01-01', end: '2014-01-03', cost: 20},
                 {title: '2', start: '2014-01-02', end: '2014-01-04', cost: 20},
-                {title: '3', start: '2014-01-03', end: '2014-01-05', cost: 20}];
+                {title: '3', start: '2014-01-03', end: '2014-01-05', cost: 20},
+                {title: '4', start: '2014-01-07', cost: 20}];
       repo = EpicRepo.initializeFromEvents(events);
     }));
 
@@ -34,6 +35,9 @@ describe('EpicRepo', function() {
       epics = repo.epicsSpanningDate(moment('2014-01-05').toDate());
       expect(epics.length).toEqual(1);
       expect(epics[0]).toEqual(Epic.withSettings(events[2]).toEvent());
+      epics = repo.epicsSpanningDate(moment('2014-01-07').toDate());
+      expect(epics.length).toEqual(1);
+      expect(epics[0]).toEqual(Epic.withSettings(events[3]).toEvent());
     }));
 
     it('returns the correct epics', inject(function(Epic) {
