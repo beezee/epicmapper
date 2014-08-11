@@ -53,7 +53,7 @@ angular.module('epicMapper.directives')
           editable: true,
           weekends: false,
           header:{
-            left: 'month',
+            left: '',
             center: 'title',
             right: 'prev,next'
           },
