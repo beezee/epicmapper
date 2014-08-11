@@ -48,6 +48,23 @@ angular.module('epicMapper.directives')
           element.find('.fc-event-title').text(eventText);
         };
 
+        var dayThresholdClass = function(daysCost) {
+          var diff = daysCost - scope.data.dailyBandwidth;
+          if (diff <= -2)
+            return 'label-success';
+          if (diff >= 2)
+            return 'label-danger';
+          return 'label-info';
+        };
+
+        var renderDay = function(date, element, view) {
+          var daysCost = costForDay(date);
+          if (!daysCost || isNaN(daysCost)) return;
+          var label = $('<span class="label label-xs hours-per-day">$'+daysCost+'</span>');    
+          label.addClass(dayThresholdClass(daysCost));
+          element.prepend(label); 
+        };
+
         scope.calendarConfig = {
           height: 450,
           editable: true,
@@ -61,11 +78,7 @@ angular.module('epicMapper.directives')
           eventDragStop: refreshCalendar,
           eventResizeStop: refreshCalendar,
           eventRender: renderEvent,
-          dayRender: function(date, element, view) {
-            var daysCost = costForDay(date);
-            if (!daysCost || isNaN(daysCost)) return;
-            element.prepend('<span class="badge badge-xs hours-per-day">$'+daysCost+'</span>');    
-          },
+          dayRender: renderDay
         };
 
         scope.$watch(

@@ -40,7 +40,7 @@
         <form class="form-horizontal">
           <fieldset>
             <div id="legend">
-              <legend class="">{{ epicData.editingEvent.title || 'New Epic' }}</legend>
+              <legend>{{ epicData.editingEvent.title || 'New Epic' }}</legend>
             </div>
        
             <!-- Title -->
@@ -96,6 +96,23 @@
               </div>
             </div>
        
+          </fieldset>
+        </form>
+      </div>
+      <br />
+      <div ng-cloak>
+        <form class="form-horizontal">
+          <fieldset>
+            <div id="bandwidth-legend">
+              <legend>Daily Bandwidth</legend>
+            </div>
+
+            <div class="control-group">
+              <div class="controls">
+                <input type="number" min="1" id="daily-bandwidth-input"
+                  name="daily-bandwidth-input" ng-model="epicData.dailyBandwidth" />
+              </div>
+            </div>
           </fieldset>
         </form>
       </div>

@@ -14,7 +14,7 @@ angular.module('epicMapper.controllers', [])
       return _.contains([6, 7], moment(date).isoWeekday());
     };
 
-    $scope.state = $base64.encode(angular.toJson('{}'));
+    $scope.state = $base64.encode(angular.toJson('{bw:10, events:[]}'));
     ngUrlBind($scope, 'state');
 
     var epicSettings = function() {
@@ -41,18 +41,24 @@ angular.module('epicMapper.controllers', [])
       $scope.epicData.editingEvent = {isNew: true};
     };
 
+    $scope.currentState = function() {
+      return {bw: $scope.epicData.dailyBandwidth,
+         events: epicSettings()};
+    };
+
     $scope.savedState = function() {
       return $base64.decode($scope.state);
     };
 
     $scope.hasUnsavedChanges = function() {
-      return angular.toJson(epicSettings()) != $scope.savedState();
+      return angular.toJson($scope.currentState()) != $scope.savedState();
     };
 
     $scope.saveState = function() {
-      $scope.state = $base64.encode(angular.toJson(epicSettings()));
+      $scope.state = $base64.encode(angular.toJson($scope.currentState()));
     };
 
-    $scope.epicData.epicRepo = EpicRepo.initializeFromEvents(angular.fromJson($scope.savedState()));
+    $scope.epicData.epicRepo = EpicRepo.initializeFromEvents(angular.fromJson($scope.savedState())['events']);
+    $scope.epicData.dailyBandwidth = angular.fromJson($scope.savedState())['bw'] || 10;
 
   }]);
