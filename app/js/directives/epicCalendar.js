@@ -68,6 +68,18 @@ angular.module('epicMapper.directives')
           },
         };
 
+        scope.$watch(
+          function() { 
+            return scope.data.epicRepo.epics.length; 
+          }, 
+          refreshCalendar
+        );
+
+        scope.$watchCollection(
+          '[data.editingEvent.cost, data.editingEvent.start, ' +
+          'data.editingEvent.end]', 
+          function() { refreshCalendar(); })
+
         element.html('<div><div ui-calendar="calendarConfig" config="calendarConfig" '
           + 'ng-model="data.eventSources" calendar="ec"></div></div>')
         $compile(element.contents())(scope);
