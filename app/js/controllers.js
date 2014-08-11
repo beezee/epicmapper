@@ -26,7 +26,9 @@ angular.module('epicMapper.controllers', [])
 
     $scope.addEpic = function() {
       if (_.contains(_.pluck($scope.epicData.epicRepo.epics, 'title'), 
-            $scope.epicData.editingEvent.title))
+            $scope.epicData.editingEvent.title)
+          || !(Epic.withSettings($scope.epicData.editingEvent)
+                .isValid()))
           return;
       $scope.epicData.epicRepo.epics.push($scope.epicData.editingEvent);
       delete $scope.epicData.editingEvent.isNew;
