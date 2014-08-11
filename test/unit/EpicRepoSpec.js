@@ -12,8 +12,8 @@ describe('EpicRepo', function() {
       var events = [{title: 'invalid'}, 
                 {title: 't', start: '2014-01-01', end: '2014-01-03', cost: 20}];
       var repo = EpicRepo.initializeFromEvents(events);
-      expect(repo.epics().length).toEqual(1);
-      expect(repo.epics()[0].settings).toEqual(events[1]);
+      expect(repo.epics.length).toEqual(1);
+      expect(repo.epics[0]).toEqual(Epic.withSettings(events[1]).toEvent());
     }));
   });
 
@@ -27,22 +27,22 @@ describe('EpicRepo', function() {
       repo = EpicRepo.initializeFromEvents(events);
     }));
 
-    it('accepts either date or string', function() {
+    it('accepts either date or string', inject(function(Epic) {
       var epics = repo.epicsSpanningDate('2014-01-01');
       expect(epics.length).toEqual(1);
-      expect(epics[0].settings).toEqual(events[0]);
+      expect(epics[0]).toEqual(Epic.withSettings(events[0]).toEvent());
       epics = repo.epicsSpanningDate(moment('2014-01-05').toDate());
       expect(epics.length).toEqual(1);
-      expect(epics[0].settings).toEqual(events[2]);
-    });
+      expect(epics[0]).toEqual(Epic.withSettings(events[2]).toEvent());
+    }));
 
-    it('returns the correct epics', function() {
-      var epicSettings = function(e) { return e.settings; };
+    it('returns the correct epics', inject(function(Epic) {
+      var toEpicEvent = function(e) { return Epic.withSettings(e).toEvent(); };
       var epics = repo.epicsSpanningDate('2014-01-02');
-      expect(_.map(epics, epicSettings)).toEqual(events.slice(0, 2));
+      expect(epics).toEqual(_.map(events.slice(0, 2), toEpicEvent));
       var epics = repo.epicsSpanningDate('2014-01-04');
-      expect(_.map(epics, epicSettings)).toEqual(events.slice(1, 3));
-    });
+      expect(epics).toEqual(_.map(events.slice(1, 3), toEpicEvent));
+    }));
 
   });
 });

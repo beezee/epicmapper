@@ -1,19 +1,21 @@
 'use strict';
 
 angular.module('epicMapper.directives')
-  .directive('epicCalendar', ['EpicRepo', '$compile', '$timeout', function(EpicRepo, $compile, $timeout) {
+  .directive('epicCalendar', ['EpicRepo', 'Epic', '$compile', '$timeout', function(EpicRepo, Epic, $compile, $timeout) {
     return {
       restrict: 'A',
       scope: {
         data: '=epicData'
       },
       link: function(scope, element, attrs) {
-        scope.eventSources = [_.map(scope.data.epicRepo.epics(), function(e) { return e.toEvent(); })];
+        
+        scope.data.eventSources = [scope.data.epicRepo.epics];
 
         var costForDay = function(day) {
           var epics = scope.data.epicRepo.epicsSpanningDate(day);
-          return _.chain(epics).map(function(e) { return e.costPerDay(); })
-            .reduce(function(sum, num) { return sum + num; });
+          return _.chain(epics).map(function(e) { return Math.ceil(Epic.withSettings(e).costPerDay()); })
+            .reduce(function(sum, num) { return sum + num; })
+            .value();
         };
 
         var editEvent = function(event, allDay, jsEvent, view) {
@@ -32,7 +34,6 @@ angular.module('epicMapper.directives')
         };
 
         var refreshCalendar = function(event, jsEvent, ui, view) {
-          scope.data.epicRepo = EpicRepo.initializeFromEvents(scope.eventSources[0]);
           if (event && scope.data.editingEvent)
             refreshEditingEvent(event);
           if (scope.ec && scope.ec.fullCalendar)
@@ -41,7 +42,7 @@ angular.module('epicMapper.directives')
 
         var renderEvent = function(event, element) {
           var eventText = event.title;
-          var epic = scope.data.epicRepo.assignedEpics[event.title];
+          var epic = Epic.withSettings(event);
           eventText += ' - Target: ' + epic.target().format('MM/DD/YYYY');
           eventText += ' Cost Per Day: ' + Math.ceil(epic.costPerDay());
           element.find('.fc-event-title').text(eventText);
@@ -63,17 +64,12 @@ angular.module('epicMapper.directives')
           dayRender: function(date, element, view) {
             var daysCost = costForDay(date);
             if (!daysCost || isNaN(daysCost)) return;
-            element.prepend('<span class="badge badge-xs hours-per-day">$'+Math.ceil(daysCost)+'</span>');    
+            element.prepend('<span class="badge badge-xs hours-per-day">$'+daysCost+'</span>');    
           },
         };
 
-        scope.$watchCollection(
-          '[data.editingEvent.cost, data.editingEvent.start, ' +
-          'data.editingEvent.end, data.editingEvent.title]', 
-          function() { refreshCalendar(); });
-
         element.html('<div><div ui-calendar="calendarConfig" config="calendarConfig" '
-          + 'ng-model="eventSources" calendar="ec"></div></div>')
+          + 'ng-model="data.eventSources" calendar="ec"></div></div>')
         $compile(element.contents())(scope);
       }
     };

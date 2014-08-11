@@ -4,26 +4,24 @@ angular.module('epicMapper.services')
   .service('EpicRepo', ['Epic', function(Epic) {
     var epicRepo = function() {};
 
-    epicRepo.prototype.assignedEpics = [];
+    epicRepo.prototype.epics = [];
 
     epicRepo.prototype.initializeFromEvents = function(events) {
       var repo = new epicRepo();
-      repo.assignedEpics = _.chain(events)
+      var distinctAssignedEpics = _.chain(events)
         .map(function(e) { return Epic.withSettings(e); })
         .filter(function(e) { return e.constructor == Epic && e.isValid(); })
-        .indexBy(function(e) { return e.settings.title; }).value();
+        .map(function(e) { return e.toEvent(); })
+        .indexBy(function(e) { return e.title; }).value();
+      repo.epics = _.values(distinctAssignedEpics);
       return repo;
-    };
-
-    epicRepo.prototype.epics = function() {
-      return _.values(this.assignedEpics);
     };
 
     epicRepo.prototype.epicsSpanningDate = function(date) {
       var targetDate = moment(date);
-      return _.filter(this.epics(), function(e) {
-        return moment(e.settings.start).startOf('day') <= targetDate.startOf('day')
-          && targetDate.startOf('day') <= moment(e.settings.end).endOf('day');
+      return _.filter(this.epics, function(e) {
+        return moment(e.start).startOf('day') <= targetDate.startOf('day')
+          && targetDate.startOf('day') <= moment(e.end).endOf('day');
       });
     };
     

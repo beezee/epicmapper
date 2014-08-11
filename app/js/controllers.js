@@ -4,8 +4,8 @@
 
 angular.module('epicMapper.controllers', [])
   .controller('epicMapperController', 
-    ['$scope', 'EpicRepo', 'ngUrlBind', '$base64', 
-      function($scope, EpicRepo, ngUrlBind, $base64) {
+    ['$scope', 'Epic', 'EpicRepo', 'ngUrlBind', '$base64', 
+      function($scope, Epic, EpicRepo, ngUrlBind, $base64) {
     
     $scope.epicData = {};
     $scope.epicData.editingEvent = {isNew: true};
@@ -24,10 +24,18 @@ angular.module('epicMapper.controllers', [])
     ngUrlBind($scope, 'state');
 
     var epicSettings = function() {
-      return _.chain($scope.epicData.epicRepo.epics())
-        .filter(function(e) { return e.target() >= moment().startOf('day'); })
-        .map(function(e) { return e.settings; })
+      return _.chain($scope.epicData.epicRepo.epics)
+        .filter(function(e) { return Epic.withSettings(e).target() >= moment().startOf('day'); })
+        .map(function(e) { return Epic.withSettings(e).toEvent(); })
         .value();
+    };
+
+    $scope.addEpic = function() {
+      if (_.contains(_.pluck($scope.epicData.epicRepo.epics, 'title'), 
+            $scope.epicData.editingEvent.title))
+          return;
+      $scope.epicData.epicRepo.epics.push($scope.epicData.editingEvent);
+      delete $scope.epicData.editingEvent.isNew;
     };
 
     $scope.savedState = function() {
